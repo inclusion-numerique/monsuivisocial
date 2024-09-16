@@ -6,14 +6,16 @@ import { Option, Options, OptionsGroups } from '@mss/web/utils/options'
 import { ChangeEventHandler, MouseEventHandler } from 'react'
 
 function OptionsList({ options }: { options: Options }) {
-  return <>
-    {options.map(({ name, value }) => (
-      <option key={value} value={value}>
-        {name}
-      </option>
-    ))}
-    )
-  </>
+  return (
+    <>
+      {options.map(({ name, value }) => (
+        <option key={value} value={value}>
+          {name}
+        </option>
+      ))}
+      )
+    </>
+  )
 }
 
 // View design options here https://www.systeme-de-design.gouv.fr/elements-d-interface/composants/liste-deroulante/
@@ -57,6 +59,13 @@ export function SelectTagsFormField<T extends FieldValues>({
     <Controller
       control={control}
       name={path}
+      /**
+       * This is set to prevent disabled Controller to be submitted (= native
+       * inputs behavior). The `any` cast is required due to Controller not
+       * defining disabled.
+       * https://github.com/react-hook-form/react-hook-form/issues/2655#issuecomment-1251171110
+       */
+      rules={{ disabled } as any}
       render={({
         field: { onChange, onBlur, value, name, ref },
         fieldState: { invalid, isTouched, error },
@@ -172,14 +181,18 @@ function OptionBadge({
   disabled?: boolean
   size?: 'sm' | 'md'
 }) {
-  return <button
-    type="button"
-    className={`fr-tag fr-mr-1w fr-mb-2v ${size === 'sm' ? 'fr-tag--sm' : ''}`}
-    disabled={disabled || option.disabled}
-    onClick={disabled ? undefined : onClick}
-    aria-label={`Retirer ${option.name}`}
-  >
-    {option.name}
-    <span className="fr-icon-close-line fr-ml-1w fr-icon--sm" />
-  </button>
+  return (
+    <button
+      type="button"
+      className={`fr-tag fr-mr-1w fr-mb-2v ${
+        size === 'sm' ? 'fr-tag--sm' : ''
+      }`}
+      disabled={disabled || option.disabled}
+      onClick={disabled ? undefined : onClick}
+      aria-label={`Retirer ${option.name}`}
+    >
+      {option.name}
+      <span className="fr-icon-close-line fr-ml-1w fr-icon--sm" />
+    </button>
+  )
 }

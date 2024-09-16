@@ -19,17 +19,17 @@ const FieldLabels = EditBeneficiaryFullDataClient.fieldLabels
 export const BeneficiaryFormCreationFields = ({
   disabled,
   control,
-  agents,
+  agentOptions,
 }: {
   disabled: boolean
   control: Control<any, any>
-  agents: Options
+  agentOptions: Options
 }) => (
   <div>
     <SelectTagsFormField
       label={FieldLabels.referents}
       disabled={disabled}
-      options={agents}
+      options={agentOptions}
       control={control}
       defaultOptionLabel="Choisissez un référent"
       defaultOption

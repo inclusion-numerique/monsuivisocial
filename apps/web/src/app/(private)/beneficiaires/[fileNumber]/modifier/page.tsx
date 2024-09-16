@@ -7,6 +7,7 @@ import { EditBeneficiaryFullDataServer } from '@mss/web/features/beneficiary/edi
 import { EditBeneficiaryGeneralInfoClient } from '@mss/web/features/beneficiary/editBeneficiary/editBeneficiaryGeneralInfo.client'
 import { EditBeneficiaryGeneralInfoServer } from '@mss/web/features/beneficiary/editBeneficiary/editBeneficiaryGeneralInfo.server'
 import { BeneficiairesQuery } from '@mss/web/server/query'
+import { canUpdateBeneficiaryReferents } from '@mss/web/security/rules'
 import { serialize } from '@mss/web/utils/serialization'
 import { notFound } from 'next/navigation'
 
@@ -33,7 +34,12 @@ const EditBeneficiaryPage = async ({
     notFound()
   }
 
-  const agents = await BeneficiairesQuery.getAgentOptions(user)
+  const agentOptions = await BeneficiairesQuery.getAgentOptions(user)
+
+  // NOTE: Could I have done this in BeneficiaryFormFields and keep secure ?
+  const canUpdateReferents = canUpdateBeneficiaryReferents(user, beneficiary)
+
+  // FIXME: Préparer la possibilité ou non de modifier pour les agents d'accueil ici.
 
   const formProperties = EditBeneficiaryFullDataClient.securityCheck(
     user,
@@ -84,19 +90,12 @@ const EditBeneficiaryPage = async ({
         <div className="fr-col-12 fr-col-lg-10 fr-col-xl-8">
           <div className="fr-card">
             <div className="fr-card__body fr-py-8v">
-              {formProperties.full ? (
-                <BeneficiaryFormEdition
-                  full={formProperties.full}
-                  agents={agents}
-                  defaultInput={serialize(formProperties.defaultInput)}
-                />
-              ) : (
-                <BeneficiaryFormEdition
-                  full={formProperties.full}
-                  agents={agents}
-                  defaultInput={serialize(formProperties.defaultInput)}
-                />
-              )}
+              <BeneficiaryFormEdition
+                full={formProperties.full}
+                agentOptions={agentOptions}
+                defaultInput={serialize(formProperties.defaultInput)}
+                referentsDisabled={canUpdateReferents}
+              />
             </div>
           </div>
         </div>

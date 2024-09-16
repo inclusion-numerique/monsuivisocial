@@ -18,12 +18,12 @@ import { BeneficiaryFormCreationFields } from './BeneficiaryFormCreationFields'
  * This forms permits creation of beneficiaries, with full or general info
  */
 export const BeneficiaryFormCreation = withTrpc(
-  (properties: { agents: Options; structureId: string }) => {
+  (properties: { agentOptions: Options; structureId: string }) => {
     const router = useRouter()
 
     const mutation = trpc.beneficiary.create.useMutation()
 
-    const { agents, structureId } = properties
+    const { agentOptions, structureId } = properties
 
     const form = useForm<BeneficiaryCreationInput>({
       resolver: zodResolver(createBeneficiarySchema),
@@ -52,7 +52,7 @@ export const BeneficiaryFormCreation = withTrpc(
         <BeneficiaryFormCreationFields
           disabled={fieldsDisabled}
           control={control}
-          agents={agents}
+          agentOptions={agentOptions}
         />
 
         <FormError message={error?.message} />

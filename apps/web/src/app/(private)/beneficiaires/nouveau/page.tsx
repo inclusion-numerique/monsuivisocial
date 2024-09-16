@@ -6,8 +6,7 @@ import { BeneficiairesQuery } from '@mss/web/server/query'
 
 const AddBeneficiaryPage = async () => {
   const user = await getAuthenticatedAgent()
-  const agents = await BeneficiairesQuery.getAgentOptions(user)
-
+  const agentOptions = await BeneficiairesQuery.getAgentOptions(user)
   const { structureId } = user
 
   return (
@@ -21,7 +20,7 @@ const AddBeneficiaryPage = async () => {
           <div className="fr-card">
             <div className="fr-card__body fr-py-8v">
               <BeneficiaryFormCreation
-                agents={agents}
+                agentOptions={agentOptions}
                 structureId={structureId}
               />
             </div>

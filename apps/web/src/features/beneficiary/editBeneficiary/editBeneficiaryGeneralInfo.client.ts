@@ -11,7 +11,7 @@ export const EditBeneficiaryGeneralInfoClient = createMutationClient({
     .extend({
       beneficiaryId: z.string().uuid(),
     })
-    .omit({ structureId: true }),
+    .omit({ referents: true }), // FIXME: Would be nice to base it on canUpdateBeneficiaryReferents if possible. Otherwise, GeneralInfo = formulaire d'agent d'accueil
   beneficiaryAnonymization:
     AddBeneficiaryWithGeneralInfoClient.beneficiaryAnonymization,
   fieldLabels: {

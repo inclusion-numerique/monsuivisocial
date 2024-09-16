@@ -30,21 +30,23 @@ const FieldLabels = EditBeneficiaryFullDataClient.fieldLabels
 // FIXME: Number input are not properly handled by Zod validation (the emitted value is a string)
 
 export const BeneficiaryFormFields = ({
-  disabled,
+  disabled, // FIXME: Pas certains de l'accessibilité de désactiver tous les champs du formulaire. On peut seulement désactiver le bouton de soumission ?
   control,
-  agents,
+  agentOptions,
   full,
+  referentsDisabled,
 }: {
   disabled: boolean
   control: Control<any, any>
-  agents: Options
+  agentOptions: Options
   full: boolean
+  referentsDisabled?: boolean
 }) => (
   <div>
     <SelectTagsFormField
       label={FieldLabels.referents}
-      disabled={disabled}
-      options={agents}
+      disabled={disabled || !referentsDisabled}
+      options={agentOptions}
       control={control}
       defaultOptionLabel="Choisissez un référent"
       defaultOption

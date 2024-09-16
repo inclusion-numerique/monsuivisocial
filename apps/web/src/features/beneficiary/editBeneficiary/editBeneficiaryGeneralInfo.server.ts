@@ -3,7 +3,6 @@ import { EditBeneficiaryGeneralInfoClient } from '@mss/web/features/beneficiary/
 import { prismaClient } from '@mss/web/server/prisma/prismaClient'
 import { MutationInput } from '@mss/web/features/createMutation.client'
 import { removeNullAndUndefinedValues } from '@mss/web/utils/removeNullAndUndefinedValues'
-import { computeArrayDiff } from '@mss/web/utils/diff'
 import { Nationalities } from '@mss/web/client/options/nationality'
 
 export const EditBeneficiaryGeneralInfoServer =
@@ -67,20 +66,15 @@ export const EditBeneficiaryGeneralInfoServer =
       referents: referents.map((referent) => referent.id),
       ...removeNullAndUndefinedValues(data),
     }),
-    executeMutation: async ({ input, transaction, initialInput }) => {
-      const { beneficiaryId, referents, ...data } = input
-
-      const referentsDiff = computeArrayDiff(initialInput.referents, referents)
+    executeMutation: async ({ input, transaction, initialInput, user }) => {
+      // FIXME: data contient aussi les données qui n'ont pas changé ? Dans ce cas là
+      const { beneficiaryId, structureId, ...data } = input
 
       const beneficiary = await transaction.beneficiary.update({
         where: { id: beneficiaryId },
         data: {
           updated: new Date(),
           ...data,
-          referents: {
-            connect: referentsDiff.added.map((id) => ({ id })),
-            disconnect: referentsDiff.removed.map((id) => ({ id })),
-          },
         },
       })
 
